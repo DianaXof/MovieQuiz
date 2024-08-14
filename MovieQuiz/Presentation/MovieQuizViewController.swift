@@ -48,11 +48,13 @@ final class MovieQuizViewController: UIViewController {
     
     private func setupPreviewImageView() {
         if currentQuestionIndex == 0 {
+            previewImageView.contentMode = .scaleAspectFill
             previewImageView.layer.masksToBounds = true
             previewImageView.layer.borderWidth = 8
-            previewImageView.layer.borderColor = UIColor.white.cgColor
+            previewImageView.layer.borderColor = UIColor.clear.cgColor
             previewImageView.layer.cornerRadius = 20
         } else {
+            previewImageView.contentMode = .scaleAspectFill
             previewImageView.layer.masksToBounds = false
             previewImageView.layer.cornerRadius = 20
         }
