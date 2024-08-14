@@ -1,8 +1,8 @@
 import UIKit
 
 final class MovieQuizViewController: UIViewController {
-    @IBOutlet weak var yesButton: UIButton!
-    @IBOutlet weak var noButton: UIButton!
+    @IBOutlet private var yesButton: UIButton!
+    @IBOutlet private var noButton: UIButton!
     
     @IBOutlet private var previewImageView: UIImageView!
     @IBOutlet private var questionIndexLabel: UILabel!
@@ -47,12 +47,19 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func setupPreviewImageView() {
-        previewImageView.layer.masksToBounds = true
-        previewImageView.layer.borderWidth = 8
-        previewImageView.layer.borderColor = UIColor.white.cgColor
-        previewImageView.layer.cornerRadius = 6
+        if currentQuestionIndex == 0 {
+            previewImageView.contentMode = .scaleAspectFill
+            previewImageView.layer.masksToBounds = true
+            previewImageView.layer.borderWidth = 8
+            previewImageView.layer.borderColor = UIColor.clear.cgColor
+            previewImageView.layer.cornerRadius = 20
+        } else {
+            previewImageView.contentMode = .scaleAspectFill
+            previewImageView.layer.masksToBounds = false
+            previewImageView.layer.cornerRadius = 20
+        }
     }
-    
+        
     private func showResultAlert() {
         let viewModel = QuizResultViewModel(
             title: "Раунд окончен!",
@@ -77,11 +84,15 @@ final class MovieQuizViewController: UIViewController {
     }
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
+        yesButton.isEnabled = false
+        noButton.isEnabled = false
         showAnswerResult(isCorrect: questions[currentQuestionIndex].correctAnswer)
         nextQuestion()
     }
     
     @IBAction private func noButtonClicked(_ sender: UIButton) {
+        yesButton.isEnabled = false
+        noButton.isEnabled = false
         showAnswerResult(isCorrect: questions[currentQuestionIndex].correctAnswer == false)
         nextQuestion()
     }
@@ -93,13 +104,13 @@ final class MovieQuizViewController: UIViewController {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             let colorAnimation = CABasicAnimation(keyPath: "borderColor")
-            colorAnimation.fromValue = UIColor.ypWhite1.cgColor
+            colorAnimation.fromValue = UIColor.clear.cgColor
             colorAnimation.toValue = isCorrect ? UIColor.ypGreen1.cgColor : UIColor.ypRed1.cgColor
             colorAnimation.duration = 0.9
             colorAnimation.timingFunction = CAMediaTimingFunction(name: .easeOut)
             
             self.previewImageView?.layer.add(colorAnimation, forKey: "borderColorChange")
-            self.previewImageView?.layer.borderColor = UIColor.ypWhite1.cgColor
+            self.previewImageView?.layer.borderColor = UIColor.clear.cgColor
         }
     }
     
@@ -138,6 +149,9 @@ final class MovieQuizViewController: UIViewController {
                     self.questionLabel.alpha = 1
                     self.questionIndexLabel.alpha = 1
                     
+                } completion: { _ in
+                    self.yesButton.isEnabled = true
+                    self.noButton.isEnabled = true
                 }
             }
         }
@@ -188,68 +202,3 @@ final class MovieQuizViewController: UIViewController {
         ]
     }
 }
-
-
-/*
- Mock-данные
- 
- 
- Картинка: The Godfather
- Настоящий рейтинг: 9,2
- Вопрос: Рейтинг этого фильма больше чем 6?
- Ответ: ДА
- 
- 
- Картинка: The Dark Knight
- Настоящий рейтинг: 9
- Вопрос: Рейтинг этого фильма больше чем 6?
- Ответ: ДА
- 
- 
- Картинка: Kill Bill
- Настоящий рейтинг: 8,1
- Вопрос: Рейтинг этого фильма больше чем 6?
- Ответ: ДА
- 
- 
- Картинка: The Avengers
- Настоящий рейтинг: 8
- Вопрос: Рейтинг этого фильма больше чем 6?
- Ответ: ДА
- 
- 
- Картинка: Deadpool
- Настоящий рейтинг: 8
- Вопрос: Рейтинг этого фильма больше чем 6?
- Ответ: ДА
- 
- 
- Картинка: The Green Knight
- Настоящий рейтинг: 6,6
- Вопрос: Рейтинг этого фильма больше чем 6?
- Ответ: ДА
- 
- 
- Картинка: Old
- Настоящий рейтинг: 5,8
- Вопрос: Рейтинг этого фильма больше чем 6?
- Ответ: НЕТ
- 
- 
- Картинка: The Ice Age Adventures of Buck Wild
- Настоящий рейтинг: 4,3
- Вопрос: Рейтинг этого фильма больше чем 6?
- Ответ: НЕТ
- 
- 
- Картинка: Tesla
- Настоящий рейтинг: 5,1
- Вопрос: Рейтинг этого фильма больше чем 6?
- Ответ: НЕТ
- 
- 
- Картинка: Vivarium
- Настоящий рейтинг: 5,8
- Вопрос: Рейтинг этого фильма больше чем 6?
- Ответ: НЕТ
- */
